@@ -1,0 +1,352 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>A Little Story About You, Renad</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: full-screen chapters, text set left on wide screens with a drifting rose glow behind it; one pill nav at the bottom. */
+:root {
+  --ink: #12050c;
+  --wine: #2b0a1b;
+  --rose: #ff5c8a;
+  --blush: #ffd6e0;
+  --ember: #ffb27a;
+  --text: #fbeff2;
+  --muted: #d9b4c1;
+  --display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+  overflow: hidden;
+}
+.app { position: relative; height: 100%; margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))) calc(-1 * max(16px, env(safe-area-inset-right, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); overflow: hidden; background: radial-gradient(120% 90% at 50% 100%, var(--wine), var(--ink) 70%); }
+
+/* glow */
+.glow { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.orb { position: absolute; width: min(70vw, 720px); aspect-ratio: 1; border-radius: 50%; filter: blur(70px); opacity: .55; transition: transform 2.2s cubic-bezier(.2,.7,.2,1), opacity 1.5s; will-change: transform; }
+.orb.a { background: radial-gradient(circle, var(--rose), transparent 65%); left: 0; top: 0; }
+.orb.b { background: radial-gradient(circle, var(--ember), transparent 65%); right: 0; bottom: 0; opacity: .32; }
+.orb.c { background: radial-gradient(circle, #b3235a, transparent 65%); left: 30%; top: 40%; opacity: .4; }
+.app[data-s="0"] .a { transform: translate(40vw, -8vh); } .app[data-s="0"] .b { transform: translate(10vw, 6vh); } .app[data-s="0"] .c { transform: translate(0, -10vh); }
+.app[data-s="1"] .a { transform: translate(-20vw, 20vh); } .app[data-s="1"] .b { transform: translate(-30vw, -10vh); } .app[data-s="1"] .c { transform: translate(30vw, -20vh); }
+.app[data-s="2"] .a { transform: translate(55vw, 30vh); } .app[data-s="2"] .b { transform: translate(-10vw, -30vh); } .app[data-s="2"] .c { transform: translate(-10vw, 10vh); }
+.app[data-s="3"] .a { transform: translate(10vw, -20vh); } .app[data-s="3"] .b { transform: translate(-45vw, 10vh); } .app[data-s="3"] .c { transform: translate(40vw, 20vh); }
+.app[data-s="4"] .a { transform: translate(60vw, 5vh); } .app[data-s="4"] .b { transform: translate(-5vw, -5vh); } .app[data-s="4"] .c { transform: translate(-20vw, -25vh); }
+.app[data-s="5"] .a { transform: translate(30vw, 25vh); } .app[data-s="5"] .b { transform: translate(-25vw, -20vh); } .app[data-s="5"] .c { transform: translate(35vw, -15vh); }
+.app[data-s="6"] .a { transform: translate(25vw, 5vh); } .app[data-s="6"] .b { transform: translate(-15vw, -5vh); } .app[data-s="6"] .c { transform: translate(10vw, 0); opacity: .6; }
+.app[data-s="6"] .a, .app[data-s="6"] .b { opacity: .6; }
+canvas#hearts { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.grain { position: absolute; inset: 0; pointer-events: none; opacity: .07; mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+/* slides */
+.slide {
+  position: absolute; inset: 0;
+  padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px));
+  padding-top: max(28px, env(safe-area-inset-top, 0px));
+  padding-bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px));
+  display: flex; align-items: center;
+  overflow-y: auto; overflow-x: hidden;
+  opacity: 0; visibility: hidden;
+  transition: opacity .7s ease, visibility 0s .7s;
+}
+.slide.on { opacity: 1; visibility: visible; transition: opacity .7s ease; }
+.inner { width: 100%; min-width: 0; max-width: 40rem; margin-block: auto; margin-left: clamp(0px, 9vw, 12rem); display: flex; flex-direction: column; gap: 1.15rem; }
+.slide[data-final] .inner { max-width: 44rem; }
+.eyebrow { font-size: .78rem; letter-spacing: .22em; text-transform: uppercase; color: var(--rose); font-weight: 600; font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: .8rem; }
+.eyebrow::after { content: ""; height: 1px; width: 3.5rem; background: linear-gradient(90deg, var(--rose), transparent); }
+h1, h2 { font-family: var(--display); font-weight: 400; margin: 0; line-height: .98; letter-spacing: -.01em; font-size: clamp(2.9rem, 9.5vw, 6.6rem); text-wrap: balance; text-shadow: 0 0 40px rgba(255, 92, 138, .35); }
+h1 em, h2 em { color: var(--blush); }
+.lead { font-family: var(--display); font-style: italic; font-size: clamp(1.5rem, 3.6vw, 2.3rem); color: var(--blush); margin: 0; line-height: 1.2; }
+p { margin: 0; font-size: clamp(1.05rem, 1.7vw, 1.28rem); line-height: 1.7; color: var(--text); max-width: 36rem; text-wrap: pretty; }
+p.soft { color: var(--muted); }
+.stack { display: flex; flex-direction: column; gap: 1rem; }
+.say { font-family: var(--display); font-size: clamp(2rem, 5.6vw, 3.6rem); line-height: 1.05; margin: .4rem 0; color: #fff; text-shadow: 0 0 36px rgba(255, 92, 138, .6); max-width: 30rem; text-wrap: balance; }
+.say em { color: var(--rose); }
+.sign { font-family: var(--display); font-style: italic; font-size: clamp(1.4rem, 3vw, 1.9rem); color: var(--blush); margin-top: .6rem; }
+
+/* reveal */
+.rv { opacity: 0; transform: translateY(18px); filter: blur(6px); transition: opacity 0s .7s, transform 0s .7s, filter 0s .7s; }
+.slide.on .rv { opacity: 1; transform: none; filter: none; transition: opacity 1s ease calc(var(--i, 0) * .3s + .3s), transform 1s cubic-bezier(.2,.7,.2,1) calc(var(--i, 0) * .3s + .3s), filter 1s ease calc(var(--i, 0) * .3s + .3s); }
+
+/* nav */
+.nav { position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: .8rem; padding: 1rem max(16px, env(safe-area-inset-right, 0px)) calc(1.1rem + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); background: linear-gradient(to top, rgba(18, 5, 12, .85), transparent); }
+.dots { display: flex; gap: .55rem; align-items: center; }
+.dot { width: .55rem; height: .55rem; border-radius: 50%; border: 0; padding: 0; background: rgba(255, 214, 224, .28); cursor: pointer; transition: all .5s; }
+.dot.on { width: 1.8rem; border-radius: 1rem; background: var(--rose); box-shadow: 0 0 14px var(--rose); }
+.dot:hover { background: var(--blush); }
+.btn { font: 600 1rem/1 var(--body); display: inline-flex; align-items: center; justify-content: center; gap: .6rem; min-height: 3rem; padding: 0 1.5rem; border-radius: 3rem; border: 1px solid transparent; cursor: pointer; text-decoration: none; transition: transform .25s, box-shadow .25s, background .25s, opacity .4s; color: var(--text); }
+.btn svg { width: 1.05rem; height: 1.05rem; flex: none; }
+.btn.primary { background: linear-gradient(135deg, var(--rose), #e23a74); color: #fff; box-shadow: 0 0 0 0 rgba(255, 92, 138, .5), 0 10px 30px -8px rgba(255, 92, 138, .7); animation: pulse 2.6s infinite; }
+.btn.primary:hover { transform: translateY(-2px); }
+.btn.ghost { background: rgba(255, 255, 255, .06); border-color: rgba(255, 214, 224, .25); }
+.btn.ghost:hover { background: rgba(255, 255, 255, .12); }
+.btn:focus-visible, .dot:focus-visible { outline: 2px solid var(--blush); outline-offset: 3px; }
+.btn[hidden] { display: none; }
+.nav .back { visibility: hidden; }
+.nav .back.show { visibility: visible; }
+.cta { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: .8rem; }
+.btn.ig { background: linear-gradient(135deg, #ff7a59, #ff3d7f 55%, #c22b9b); color: #fff; box-shadow: 0 12px 34px -10px rgba(255, 61, 127, .8); }
+.btn.msg { background: rgba(255, 255, 255, .08); border-color: rgba(255, 214, 224, .4); }
+.btn.ig:hover, .btn.msg:hover { transform: translateY(-2px); }
+.again { background: none; border: 0; color: var(--muted); font: 500 .95rem var(--body); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; padding: .5rem 0; align-self: flex-start; }
+.again:hover { color: var(--blush); }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 92, 138, .5), 0 10px 30px -8px rgba(255, 92, 138, .7); } 70% { box-shadow: 0 0 0 16px rgba(255, 92, 138, 0), 0 10px 30px -8px rgba(255, 92, 138, .7); } 100% { box-shadow: 0 0 0 0 rgba(255, 92, 138, 0), 0 10px 30px -8px rgba(255, 92, 138, .7); } }
+
+@media (max-width: 560px) {
+  .inner { margin-left: 0; gap: 1rem; }
+  .dot { width: .45rem; height: .45rem; } .dot.on { width: 1.3rem; }
+  .btn { padding: 0 1.1rem; }
+  .btn .lbl { max-width: 9.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cta .btn { flex: 1 1 100%; }
+  .slide { padding-bottom: calc(6.8rem + env(safe-area-inset-bottom, 0px)); }
+}
+@media (min-width: 1500px) { .inner { max-width: 46rem; } .slide[data-final] .inner { max-width: 52rem; } }
+@media (max-height: 560px) and (orientation: landscape) { h1, h2 { font-size: clamp(2rem, 8vh, 3.4rem); } .slide { padding-bottom: 5.5rem; } }
+@media (prefers-reduced-motion: reduce) {
+  .orb, .slide, .rv, .dot { transition-duration: .01s !important; transition-delay: 0s !important; }
+  .slide.on .rv { transition-delay: 0s !important; filter: none; }
+  .btn.primary { animation: none; }
+}
+</style>
+
+<div class="app" id="app" data-s="0">
+  <div class="glow" aria-hidden="true"><div class="orb a"></div><div class="orb b"></div><div class="orb c"></div></div>
+  <canvas id="hearts" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+
+  <section class="slide on" data-next="Next" aria-label="Chapter 1 of 7">
+    <div class="inner">
+      <div class="eyebrow rv" style="--i:0">A little story about you &nbsp; 1 / 7</div>
+      <h1 class="rv" style="--i:1">Hey, <em>Renad.</em></h1>
+      <p class="lead rv" style="--i:2">Hey, pretty girl.</p>
+      <div class="stack rv" style="--i:3">
+        <p>I made this little thing for you because sometimes I have so many feelings for you and don't know how to put them into words.</p>
+        <p class="soft">So, I thought I'd try this way.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-next="Keep going" aria-label="Chapter 2 of 7">
+    <div class="inner">
+      <div class="eyebrow rv" style="--i:0">2 / 7</div>
+      <h2 class="rv" style="--i:1">You cross <em>my mind</em></h2>
+      <p class="lead rv" style="--i:2">You know what's funny?</p>
+      <div class="stack rv" style="--i:3">
+        <p>Sometimes I'm just doing my own thing, and suddenly I think of you and smile for no reason.</p>
+        <p>You just pop into my head like you belong there.</p>
+        <p class="soft">And honestly, I love that you do.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-next="One more" aria-label="Chapter 3 of 7">
+    <div class="inner">
+      <div class="eyebrow rv" style="--i:0">3 / 7</div>
+      <h2 class="rv" style="--i:1">It's <em>you.</em></h2>
+      <div class="stack rv" style="--i:2">
+        <p>I don't think you realize how much I like you, Renad.</p>
+        <p>It's your smile, your little ways, your presence, and all those things about you that I probably couldn't explain even if I tried.</p>
+        <p>I just know that there's something about you that makes you you.</p>
+      </div>
+      <p class="lead rv" style="--i:3">And I'm so, so into that girl.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-next="Keep reading" aria-label="Chapter 4 of 7">
+    <div class="inner">
+      <div class="eyebrow rv" style="--i:0">4 / 7</div>
+      <h2 class="rv" style="--i:1">If I'm being <em>honest…</em></h2>
+      <div class="stack rv" style="--i:2">
+        <p>I miss you sometimes in moments when I wish you were there.</p>
+        <p>I catch myself wanting to tell you things, share little moments with you, or just have you around.</p>
+        <p class="soft">And whenever I think about how much you mean to me, I realize that my feelings for you are so much bigger than I usually know how to say.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide" data-next="Almost there" aria-label="Chapter 5 of 7">
+    <div class="inner">
+      <div class="eyebrow rv" style="--i:0">5 / 7</div>
+      <h2 class="rv" style="--i:1">My favorite <em>feeling</em></h2>
+      <div class="stack rv" style="--i:2">
+        <p>If someone asked me what I love about you, I genuinely wouldn't know where to start.</p>
+        <p>Because it's not just one thing. It's you as a whole.</p>
+        <p>And somehow, the more I get to know you, the more I find myself falling for you in ways I didn't even expect.</p>
+      </div>
+      <p class="lead rv" style="--i:3">You're becoming someone very special to my heart, Renad.</p>
+    </div>
+  </section>
+
+  <section class="slide" data-next="One last thing…" aria-label="Chapter 6 of 7">
+    <div class="inner">
+      <div class="eyebrow rv" style="--i:0">6 / 7</div>
+      <h2 class="rv" style="--i:1">There's something I want you to <em>know</em></h2>
+      <div class="stack rv" style="--i:2">
+        <p>I don't want to make this complicated. I just want you to know that my feelings for you are real.</p>
+        <p>You're not just someone I think is pretty or someone I enjoy talking to.</p>
+        <p>You're the girl I catch myself smiling about.<br>The girl I want to be close to.<br>The girl who means more to me than I sometimes know how to explain.</p>
+      </div>
+      <p class="lead rv" style="--i:3">And, well…</p>
+    </div>
+  </section>
+
+  <section class="slide" data-final data-next="" aria-label="Chapter 7 of 7">
+    <div class="inner">
+      <div class="eyebrow rv" style="--i:0">7 / 7</div>
+      <h2 class="rv" style="--i:1">It's you, <em>Renad.</em></h2>
+      <p class="say rv" style="--i:2">I'm in love with you, <em>baby.</em></p>
+      <div class="stack rv" style="--i:3">
+        <p>And I mean it.</p>
+        <p>I love the way you make me feel, the way you find your way into my thoughts, and the fact that out of all the people in this world, it's you who has my heart feeling like this.</p>
+        <p>I wish I could be there with you right now, look into your eyes, hold you close, and tell you all of this without needing a screen between us.</p>
+        <p class="soft">But until then, I made you this little piece of my heart. Just so you know that behind every word here, there's a real feeling. And behind all these feelings, there's one girl.</p>
+      </div>
+      <p class="sign rv" style="--i:4">You. Always you, Renad.<br>I'm so lucky my heart found you.</p>
+      <div class="cta rv" style="--i:5">
+        <a class="btn ig" id="ig" href="https://www.instagram.com/cixaldir" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg><span class="lbl">Come find me on Instagram</span></a>
+        <a class="btn msg" id="msg" href="https://wa.me/201288681771" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.7-5.2A8.5 8.5 0 1 1 21 12z"/></svg><span class="lbl">Send me a message</span></a>
+      </div>
+      <button class="again rv" style="--i:6" id="again" type="button">Read it again from the start</button>
+    </div>
+  </section>
+
+  <nav class="nav" aria-label="Story navigation">
+    <button class="btn ghost back" id="back" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span class="lbl">Back</span></button>
+    <div class="dots" id="dots" role="tablist" aria-label="Chapters"></div>
+    <button class="btn primary" id="next" type="button"><span class="lbl" id="nextLbl">Next</span><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.4-9.3C1.2 8.3 3.2 5 6.5 5c2 0 3.7 1.1 5.5 3.2C13.8 6.1 15.5 5 17.5 5c3.3 0 5.3 3.3 3.9 6.7C19.5 16.4 12 21 12 21z"/></svg></button>
+  </nav>
+</div>
+
+<script>
+/* ---- Set these two links to your own ---- */
+var CONFIG = {
+  instagram: "https://www.instagram.com/cixaldir",
+  message: "https://wa.me/201288681771"
+};
+document.getElementById("ig").href = CONFIG.instagram;
+document.getElementById("msg").href = CONFIG.message;
+
+(function () {
+  var app = document.getElementById("app");
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var back = document.getElementById("back"), next = document.getElementById("next"), nextLbl = document.getElementById("nextLbl");
+  var dotsEl = document.getElementById("dots");
+  var cur = 0, N = slides.length, lock = false;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var dots = slides.map(function (_, i) {
+    var d = document.createElement("button");
+    d.className = "dot" + (i === 0 ? " on" : "");
+    d.type = "button"; d.setAttribute("role", "tab"); d.setAttribute("aria-label", "Chapter " + (i + 1));
+    d.addEventListener("click", function () { go(i); });
+    dotsEl.appendChild(d); return d;
+  });
+
+  function go(i) {
+    if (i < 0 || i >= N || i === cur || lock) return;
+    lock = true; setTimeout(function () { lock = false; }, 450);
+    slides[cur].classList.remove("on");
+    cur = i;
+    var s = slides[cur];
+    s.scrollTop = 0; s.classList.add("on");
+    app.setAttribute("data-s", cur);
+    dots.forEach(function (d, k) { d.classList.toggle("on", k === cur); d.setAttribute("aria-selected", k === cur); });
+    back.classList.toggle("show", cur > 0);
+    var last = cur === N - 1;
+    next.hidden = last;
+    nextLbl.textContent = s.getAttribute("data-next") || "Next";
+    burst(last ? 46 : 10, last);
+  }
+  next.addEventListener("click", function () { go(cur + 1); });
+  back.addEventListener("click", function () { go(cur - 1); });
+  document.getElementById("again").addEventListener("click", function () { go(0); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight" || e.key === "PageDown") go(cur + 1);
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") go(cur - 1);
+  });
+  var tx = null, ty = null;
+  app.addEventListener("touchstart", function (e) { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+  app.addEventListener("touchend", function (e) {
+    if (tx === null) return;
+    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(cur + (dx < 0 ? 1 : -1));
+    tx = ty = null;
+  }, { passive: true });
+
+  /* ---- floating hearts ---- */
+  var cv = document.getElementById("hearts"), ctx = cv.getContext("2d");
+  var W = 0, H = 0, DPR = 1, parts = [];
+  var cols = ["255,92,138", "255,214,224", "255,178,122", "226,58,116"];
+  function size() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  function mk(x, y, burstMode) {
+    var s = 7 + Math.random() * 20;
+    return {
+      x: x, y: y, s: s, c: cols[(Math.random() * cols.length) | 0],
+      vy: burstMode ? -(0.8 + Math.random() * 1.8) : -(0.18 + Math.random() * 0.5),
+      vx: burstMode ? (Math.random() - .5) * 1.6 : 0,
+      ph: Math.random() * 6.28, sw: 0.4 + Math.random() * 0.9,
+      a: 0.25 + Math.random() * 0.5, life: burstMode ? 1 : 0, burst: !!burstMode
+    };
+  }
+  function heart(x, y, s) {
+    ctx.beginPath();
+    ctx.moveTo(x, y + s * .35);
+    ctx.bezierCurveTo(x, y, x - s * .5, y, x - s * .5, y + s * .3);
+    ctx.bezierCurveTo(x - s * .5, y + s * .6, x, y + s * .8, x, y + s);
+    ctx.bezierCurveTo(x, y + s * .8, x + s * .5, y + s * .6, x + s * .5, y + s * .3);
+    ctx.bezierCurveTo(x + s * .5, y, x, y, x, y + s * .35);
+    ctx.closePath();
+  }
+  function target() { return Math.max(10, Math.min(34, Math.round(W / 45))); }
+  function seed() { parts = []; for (var i = 0; i < target(); i++) parts.push(mk(Math.random() * W, Math.random() * H, false)); }
+  function burst(n, big) {
+    if (reduce) return;
+    for (var i = 0; i < n; i++) {
+      var p = mk(W * (big ? Math.random() : .15 + Math.random() * .7), H * (big ? .95 : .85), true);
+      if (big) { p.s *= 1.15; p.vy *= 1.15; }
+      parts.push(p);
+    }
+  }
+  var last = 0;
+  function frame(t) {
+    var dt = Math.min(48, t - last) / 16.7; last = t;
+    ctx.clearRect(0, 0, W, H);
+    for (var i = parts.length - 1; i >= 0; i--) {
+      var p = parts[i];
+      p.y += p.vy * dt; p.ph += 0.015 * dt;
+      p.x += (p.burst ? p.vx : Math.sin(p.ph) * p.sw) * dt * (p.burst ? 1 : .5);
+      if (p.burst) { p.vx *= .995; p.a -= 0.0035 * dt; }
+      if (p.y < -40 || p.a <= 0) {
+        if (p.burst) { parts.splice(i, 1); continue; }
+        parts[i] = mk(Math.random() * W, H + 20, false); continue;
+      }
+      ctx.save();
+      ctx.shadowColor = "rgba(" + p.c + ",.9)"; ctx.shadowBlur = p.s * .9;
+      ctx.fillStyle = "rgba(" + p.c + "," + Math.min(.8, p.a) + ")";
+      heart(p.x, p.y, p.s); ctx.fill(); ctx.restore();
+    }
+    requestAnimationFrame(frame);
+  }
+  size(); seed();
+  window.addEventListener("resize", function () { size(); if (parts.length < target()) seed(); });
+  if (reduce) {
+    ctx.clearRect(0, 0, W, H);
+    parts.forEach(function (p) { ctx.fillStyle = "rgba(" + p.c + ",.3)"; heart(p.x, p.y, p.s); ctx.fill(); });
+  } else { requestAnimationFrame(frame); }
+})();
+</script>
+
+</body></html>
